@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+
+<html>
+<head>
+  <title>Exemple d'intégration Firebase</title>
+  <!-- Ajoutez les scripts Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-messaging.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-database.js"></script>
+</head>
+<body>
+  <h1>Exemple d'intégration Firebase</h1>
+
+  <script>
+    // Initialisez Firebase avec votre configuration
+  const firebaseConfig = {
+  apiKey: "AIzaSyAdHCxY2yPSgypFNhcWQDKggZ-kXDw-MUA",
+  authDomain: "ginko-notif.firebaseapp.com",
+  projectId: "ginko-notif",
+  storageBucket: "ginko-notif.appspot.com",
+  messagingSenderId: "661821800147",
+  appId: "1:661821800147:web:2f3d5250999a0144969e26"
+};
+    firebase.initializeApp(firebaseConfig);
+
+    // Obtenez l'instance de messagerie Firebase
+    const messaging = firebase.messaging();
+
+    // Demandez la permission d'envoyer des notifications
+    messaging.requestPermission()
+      .then(function() {
+        console.log("Permission granted.");
+
+        // Obtenez le jeton de messagerie Firebase
+        return messaging.getToken();
+      })
+      .then(function(token) {
+        console.log("Token: ", token);
+
+        // Enregistrez le jeton de messagerie dans votre base de données Firebase
+        firebase.database().ref('tokens').push({
+          token: token
+        }).then(function() {
+          console.log("Token enregistré dans la base de données Firebase.");
+        }).catch(function(error) {
+          console.log("Erreur lors de l'enregistrement du token : ", error);
+        });
+      })
+      .catch(function(error) {
+        console.log("Permission denied: ", error);
+      });
+  </script>
+</body>
+</html>
